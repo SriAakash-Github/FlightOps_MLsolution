@@ -1,10 +1,12 @@
-from flask import render_template, request, jsonify, flash, redirect, url_for
+from flask import render_template, request, jsonify, flash, redirect, url_for, Response
 import joblib
 import numpy as np
 import pandas as pd
 import os
 import logging
 from app import app
+import csv
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +51,7 @@ class ModelPredictor:
 
 # Initialize predictor
 predictor = ModelPredictor()
+prediction_history = []
 
 @app.route('/')
 def index():
@@ -103,6 +106,13 @@ def damage_prediction():
                     'low_risk_prob': float(probability[0]) * 100,
                     'high_risk_prob': float(probability[1]) * 100 if len(probability) > 1 else 0
                 }
+                
+                prediction_history.append({
+                    'timestamp': datetime.now().isoformat(),
+                    'model': 'damage',
+                    'inputs': request.form,
+                    'result': result
+                })
                 
                 return render_template('damage_prediction.html', result=result, 
                                      form_data=request.form)
@@ -160,6 +170,13 @@ def downtime_prediction():
                     'high_risk_prob': float(probability[1]) * 100 if len(probability) > 1 else 0
                 }
                 
+                prediction_history.append({
+                    'timestamp': datetime.now().isoformat(),
+                    'model': 'downtime',
+                    'inputs': request.form,
+                    'result': result
+                })
+                
                 return render_template('downtime_prediction.html', result=result,
                                      form_data=request.form)
             else:
@@ -216,6 +233,13 @@ def departure_prediction():
                     'high_risk_prob': float(probability[1]) * 100 if len(probability) > 1 else 0
                 }
                 
+                prediction_history.append({
+                    'timestamp': datetime.now().isoformat(),
+                    'model': 'departure',
+                    'inputs': request.form,
+                    'result': result
+                })
+                
                 return render_template('departure_prediction.html', result=result,
                                      form_data=request.form)
             else:
@@ -270,6 +294,13 @@ def mishandled_prediction():
                     'high_risk_prob': float(probability[1]) * 100 if len(probability) > 1 else 0
                 }
                 
+                prediction_history.append({
+                    'timestamp': datetime.now().isoformat(),
+                    'model': 'mishandled',
+                    'inputs': request.form,
+                    'result': result
+                })
+                
                 return render_template('mishandled_prediction.html', result=result,
                                      form_data=request.form)
             else:
@@ -321,6 +352,13 @@ def transfer_prediction():
                     'high_risk_prob': float(probability[1]) * 100 if len(probability) > 1 else 0
                 }
                 
+                prediction_history.append({
+                    'timestamp': datetime.now().isoformat(),
+                    'model': 'transfer',
+                    'inputs': request.form,
+                    'result': result
+                })
+                
                 return render_template('transfer_prediction.html', result=result,
                                      form_data=request.form)
             else:
@@ -367,6 +405,24 @@ def train_models():
         logger.error(f"Error training models: {e}")
         flash(f'Error training models: {str(e)}', 'error')
         return redirect(url_for('index'))
+
+@app.route('/prediction_history')
+def prediction_history_view():
+    return render_template('prediction_history.html', history=prediction_history)
+
+@app.route('/download_history')
+def download_history():
+    def generate():
+        data = [
+            ['Timestamp', 'Model', 'Inputs', 'Result']
+        ] + [
+            [h['timestamp'], h['model'], h['inputs'], h['result']] for h in prediction_history
+        ]
+        for row in data:
+            yield ','.join(map(str, row)) + '\n'
+    return Response(generate(), mimetype='text/csv', headers={
+        'Content-Disposition': 'attachment; filename=prediction_history.csv'
+    })
 
 @app.route('/baggage_delay_prediction', methods=['GET', 'POST'])
 def baggage_delay_prediction_v1():

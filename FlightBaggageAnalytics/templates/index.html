@@ -4,17 +4,14 @@
 
 {% block content %}
 <div class="container">
-    <!-- Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="display-4 mb-3">
-                <i data-feather="trending-up"></i>
-                Baggage Operations Dashboard
-            </h1>
-            <p class="lead">Flight-level baggage prediction system using machine learning</p>
-        </div>
+    <!-- Hero Section -->
+    <div class="hero-section mb-5">
+        <h1><i data-feather="trending-up"></i> Baggage Operations Dashboard</h1>
+        <p class="lead">Flight-level baggage prediction system using machine learning.<br>Empowering airports with real-time, actionable insights.</p>
+        <a href="{{ url_for('damage_prediction') }}" class="btn btn-primary mt-2">
+            <i data-feather="activity"></i> Try a Prediction
+        </a>
     </div>
-
     <!-- Model Status Cards -->
     <div class="row mb-5">
         <div class="col-12">
@@ -42,20 +39,6 @@
                                 <i data-feather="shuffle"></i> Transfer SLA Model
                             {% endif %}
                         </h5>
-                        <div class="row text-center">
-                            <div class="col-6">
-                                <div class="text-success">
-                                    <strong>{{ "%.1f"|format(metric.accuracy * 100) }}%</strong>
-                                </div>
-                                <small class="text-muted">Accuracy</small>
-                            </div>
-                            <div class="col-6">
-                                <div class="text-info">
-                                    <strong>{{ "%.1f"|format(metric.f1 * 100) }}%</strong>
-                                </div>
-                                <small class="text-muted">F1 Score</small>
-                            </div>
-                        </div>
                         <div class="mt-3">
                             <span class="badge bg-success">Active</span>
                             <span class="badge bg-secondary">{{ metric.feature_names|length }} Features</span>

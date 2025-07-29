@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Prediction History{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2><i data-feather="clock"></i> Prediction History</h2>
+    <a href="{{ url_for('download_history') }}" class="btn btn-outline-primary mb-3">
+        <i data-feather="download"></i> Download CSV
+    </a>
+    <div class="table-responsive">
+        <table class="table table-dark table-striped">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Model</th>
+                    <th>Inputs</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in history %}
+                <tr>
+                    <td>{{ entry.timestamp }}</td>
+                    <td>{{ entry.model }}</td>
+                    <td><pre style="white-space: pre-wrap; word-break: break-all; background: none; border: none; color: #fff;">{{ entry.inputs }}</pre></td>
+                    <td><pre style="white-space: pre-wrap; word-break: break-all; background: none; border: none; color: #fff;">{{ entry.result }}</pre></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="text-center">No predictions yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}{{ super() }}<script>feather.replace();</script>{% endblock %}

@@ -16,6 +16,9 @@
     
     <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
+
+    <!-- Google Fonts: Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
@@ -35,6 +38,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('index') }}">
                             <i data-feather="home"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('prediction_history_view') }}">
+                            <i data-feather="clock"></i> Prediction History
                         </a>
                     </li>
                     <li class="nav-item dropdown">
@@ -62,19 +70,9 @@
                             </a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('model_performance') }}">
-                            <i data-feather="bar-chart-2"></i> Model Performance
-                        </a>
-                    </li>
                 </ul>
                 
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('train_models') }}">
-                            <i data-feather="refresh-cw"></i> Retrain Models
-                        </a>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -104,7 +102,7 @@
         <div class="container">
             <p class="mb-0 text-muted">
                 <i data-feather="cpu"></i>
-                Baggage ML Prediction System - Powered by XGBoost
+                Baggage ML Prediction System
             </p>
         </div>
     </footer>
